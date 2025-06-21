@@ -1,13 +1,13 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-from scipy.stats import poisson
 import requests
 from io import StringIO
+import os
 
 st.set_page_config(page_title="חיזוי משחקי כדורגל", layout="centered")
 
-# מילון ליגות וקבוצות
+# מילון ליגות וקבוצות (נשאר ללא שינוי)
 LEAGUE_TEAMS = {
     'Israeli Premier League': [
         'מכבי תל אביב', 'מכבי חיפה', 'הפועל תל אביב', 'הפועל חיפה', 'הפועל באר שבע',
@@ -54,21 +54,35 @@ LEAGUE_TEAMS = {
     ]
 }
 
-def load_github_data(github_raw_url, required_columns=['HomeTeam', 'AwayTeam', 'FTHG', 'FTAG']):
+def load_data(source, required_columns=['HomeTeam', 'AwayTeam', 'FTHG', 'FTAG']):
+    """טוען נתונים ממקור URL או קובץ מקומי"""
     try:
-        response = requests.get(github_raw_url)
-        response.raise_for_status()
-        df = pd.read_csv(StringIO(response.text))
+        # ניסיון טעינה מהאינטרנט
+        if source.startswith('http'):
+            response = requests.get(source)
+            response.raise_for_status()
+            df = pd.read_csv(StringIO(response.text))
+        # טעינה מקובץ מקומי
+        else:
+            if os.path.exists(source):
+                df = pd.read_csv(source)
+            else:
+                st.warning(f"קובץ מקומי לא נמצא: {source}")
+                return None
+        
+        # וידוא עמודות נדרשות
         for col in required_columns:
             if col not in df.columns:
                 df[col] = np.nan
         return df
+    
     except Exception as e:
         st.error(f"שגיאה בטעינת נתונים: {str(e)}")
         return None
 
 @st.cache_data(ttl=3600)
 def load_league_data():
+    """טוען נתוני ליגות עם נפילות לתרחישי גיבוי"""
     data_sources = {
         "Premier League": "https://raw.githubusercontent.com/Sh1503/champ/main/epl.csv",
         "La Liga": "https://raw.githubusercontent.com/Sh1503/champ/main/laliga.csv",
@@ -76,44 +90,76 @@ def load_league_data():
         "Bundesliga": "https://raw.githubusercontent.com/Sh1503/champ/main/bundesliga.csv",
         "Ligue 1": "https://raw.githubusercontent.com/Sh1503/champ/main/ligue1.csv",
         "Israeli Premier League": "https://raw.githubusercontent.com/Sh1503/champ/main/israel_league_list.csv",
-        "Champions League": "https://www.football-data.co.uk/mmz4281/2324/UCL.csv",
-        "Europa League": "https://www.football-data.co.uk/mmz4281/2324/EL.csv",
-        "Conference League": "https://www.football-data.co.uk/mmz4281/2324/ECL.csv"
+        "Champions League": "UCL.csv",  # נופל לקובץ מקומי אם הקישור נכשל
+        "Europa League": "EL.csv",      # נופל לקובץ מקומי
+        "Conference League": "ECL.csv"   # נופל לקובץ מקומי
     }
+    
     league_data = {}
-    for league, url in data_sources.items():
-        df = load_github_data(url)
+    for league, source in data_sources.items():
+        df = load_data(source)
         if df is not None:
             league_data[league] = df
+        else:
+            st.warning(f"נכשל בטעינת נתונים עבור {league}")
+    
     return league_data
 
 def calculate_expected_goals(home_team, away_team, df):
+    """מחשב שערים צפויים עם הגנות לנתונים חסרים"""
     if df.empty or df['FTHG'].isnull().all() or df['FTAG'].isnull().all():
         return 1.5, 1.0
-    home_games = df[df['HomeTeam'] == home_team]
-    away_games = df[df['AwayTeam'] == away_team]
-    home_avg = home_games['FTHG'].mean() if not home_games.empty else 1.5
-    away_avg = away_games['FTAG'].mean() if not away_games.empty else 1.0
-    return round(home_avg, 2), round(away_avg, 2)
+    
+    try:
+        home_games = df[df['HomeTeam'] == home_team]
+        away_games = df[df['AwayTeam'] == away_team]
+        
+        home_avg = home_games['FTHG'].mean() if not home_games.empty else 1.5
+        away_avg = away_games['FTAG'].mean() if not away_games.empty else 1.0
+        
+        return round(home_avg, 2), round(away_avg, 2)
+    
+    except Exception as e:
+        st.error(f"שגיאה בחישוב שערים: {str(e)}")
+        return 1.5, 1.0
 
 def get_corners_prediction(home_team, away_team, df):
+    """מחשב חיזוי קרנות עם הגנות לעמודות חסרות"""
     corner_columns = ['HC', 'AC', 'H.Corners', 'A.Corners', 'CH', 'CA']
-    available_columns = [col for col in corner_columns if col in df.columns]
-    if not available_columns:
+    
+    try:
+        available_columns = [col for col in corner_columns if col in df.columns]
+        if not available_columns:
+            return None
+            
+        home_corners = df[df['HomeTeam'] == home_team][available_columns[0]].mean()
+        away_corners = df[df['AwayTeam'] == away_team][available_columns[1]].mean() if len(available_columns) > 1 else 0
+        
+        return round((home_corners or 0) + (away_corners or 0), 1)
+    
+    except Exception as e:
+        st.error(f"שגיאה בחישוב קרנות: {str(e)}")
         return None
-    home_corners = df[df['HomeTeam'] == home_team][available_columns[0]].mean()
-    away_corners = df[df['AwayTeam'] == away_team][available_columns[1]].mean() if len(available_columns) > 1 else 0
-    return round((home_corners or 0) + (away_corners or 0), 1)
 
 def predict_match(home_team, away_team, df):
-    home_exp, away_exp = calculate_expected_goals(home_team, away_team, df)
-    corners = get_corners_prediction(home_team, away_team, df)
-    return {
-        "שערים צפויים מארחת": home_exp,
-        "שערים צפויים אורחת": away_exp,
-        "סך קרנות משוער": corners
-    }
+    """מבצע חיזוי מלא עם הגנות לשגיאות"""
+    try:
+        home_exp, away_exp = calculate_expected_goals(home_team, away_team, df)
+        corners = get_corners_prediction(home_team, away_team, df)
+        return {
+            "שערים צפויים מארחת": home_exp,
+            "שערים צפויים אורחת": away_exp,
+            "סך קרנות משוער": corners
+        }
+    except Exception as e:
+        st.error(f"שגיאה בחיזוי: {str(e)}")
+        return {
+            "שערים צפויים מארחת": 0,
+            "שערים צפויים אורחת": 0,
+            "סך קרנות משוער": None
+        }
 
+# ממשק משתמש
 st.title("⚽ חיזוי משחקי כדורגל - כל הליגות")
 
 data = load_league_data()
@@ -124,17 +170,33 @@ away_team = st.selectbox("בחר קבוצה אורחת", [team for team in LEAGU
 
 if selected_league in data and not data[selected_league].empty:
     if st.button("חשב חיזוי ⚡"):
+        # בדיקות תקינות
         if data[selected_league]['FTHG'].isnull().all():
             st.warning("⚠️ נתוני שערים חסרים - החיזוי עשוי להיות לא מדויק")
         if not any(col in data[selected_league].columns for col in ['HC', 'AC', 'H.Corners', 'A.Corners', 'CH', 'CA']):
             st.warning("⚠️ נתוני קרנות חסרים")
+        
         prediction = predict_match(home_team, away_team, data[selected_league])
+        
         st.subheader("תוצאות החיזוי:")
         st.write(f"⚽ שערים צפויים {home_team}: {prediction['שערים צפויים מארחת']}")
         st.write(f"⚽ שערים צפויים {away_team}: {prediction['שערים צפויים אורחת']}")
+        
         if prediction['סך קרנות משוער'] is not None:
             st.write(f"🟠 סך קרנות משוער: {prediction['סך קרנות משוער']}")
         else:
             st.write("🟠 אין נתוני קרנות זמינים למשחק זה.")
 else:
-    st.error("לא נמצאו נתונים לליגה שנבחרה.")
+    st.error("לא נמצאו נתונים לליגה שנבחרה. אנא ודא שקובצי ה-CSV הנדרשים נמצאים בתיקייה.")
+
+# הוראות למשתמש
+st.markdown("""
+### 📁 הוראות קבצים נדרשים:
+1. הוסף לתיקיית הפרויקט את הקבצים הבאים:
+   - `UCL.csv` - נתוני ליגת האלופות
+   - `EL.csv` - נתוני הליגה האירופית
+   - `ECL.csv` - נתוני הקונפרנס ליג
+2. הקבצים צריכים לכלול את העמודות:
+   - `HomeTeam`, `AwayTeam`, `FTHG`, `FTAG`
+3. ניתן ליצור קבצים אלו באמצעות [הקוד שהכנתי קודם](https://chat.openai.com/c/185c3b31-0b5f-4f0d-a1c1-6a0d6e5d5b5f)
+""")
