@@ -1,4 +1,3 @@
-
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -6,7 +5,7 @@ from scipy.stats import poisson
 import requests
 from io import StringIO
 
-# הגדרות דף
+# Page configuration
 st.set_page_config(
     page_title="Football Predictor Pro",
     page_icon="⚽",
@@ -14,7 +13,7 @@ st.set_page_config(
 )
 st.title("⚽ Football Match Predictor Pro")
 
-# קבוצות לפי ליגה
+# Teams per league (example teams or leave blank for automatic)
 LEAGUE_TEAMS = {
     'Bundesliga': [...],
     'Premier League': [...],
@@ -33,7 +32,7 @@ LEAGUE_TEAMS = {
     'UEFA Conference League': []
 }
 
-# טעינת נתונים מ-GitHub
+# Load data from GitHub
 def load_github_data(github_raw_url):
     try:
         response = requests.get(github_raw_url)
@@ -51,12 +50,11 @@ def load_league_data():
         "Serie A": "https://raw.githubusercontent.com/Sh1503/football-match-predictor/main/seriea.csv",
         "Bundesliga": "https://raw.githubusercontent.com/Sh1503/football-match-predictor/main/bundesliga.csv",
         "Ligue 1": "https://raw.githubusercontent.com/Sh1503/football-match-predictor/main/ligue1.csv",
-        data_sources = {
-    "UEFA Champions League": "https://raw.githubusercontent.com/football-match-predictor/main/data/champions.csv",
-    "UEFA Europa League": "https://raw.githubusercontent.com/football-match-predictor/main/data/europa.csv",
-    "UEFA Conference League": "https://raw.githubusercontent.com/football-match-predictor/main/data/conference.csv",
-    "Israeli Premier League": "https://raw.githubusercontent.com/football-match-predictor/main/data/israel_league_list.csv"
-}
+        "UEFA Champions League": "https://raw.githubusercontent.com/football-match-predictor/main/data/champions.csv",
+        "UEFA Europa League": "https://raw.githubusercontent.com/football-match-predictor/main/data/europa.csv",
+        "UEFA Conference League": "https://raw.githubusercontent.com/football-match-predictor/main/data/conference.csv",
+        "Israeli Premier League": "https://raw.githubusercontent.com/football-match-predictor/main/data/israel_league_list.csv"
+    }
 
     league_data = {}
     for league, url in data_sources.items():
@@ -65,7 +63,7 @@ def load_league_data():
             league_data[league] = df
     return league_data
 
-# חיזוי תוצאה
+# Match prediction logic
 def predict_match(home_team, away_team, df):
     home_goals = df[df['HomeTeam'] == home_team]['FTHG'].mean()
     away_goals = df[df['AwayTeam'] == away_team]['FTAG'].mean()
@@ -94,7 +92,7 @@ def get_corners_prediction(home_team, away_team, df):
         return round(home_corners + away_corners, 1)
     return None
 
-# ממשק משתמש
+# Interface
 data = load_league_data()
 selected_league = st.selectbox("בחר ליגה", options=list(data.keys()))
 
