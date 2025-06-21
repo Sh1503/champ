@@ -1,13 +1,9 @@
-# התקנת החבילות הנדרשות
-# !pip install streamlit pandas numpy scipy requests
-
 import streamlit as st
 import pandas as pd
 import numpy as np
 from scipy.stats import poisson
 import requests
 from io import StringIO
-import os
 
 # הגדרות דף
 st.set_page_config(
@@ -17,7 +13,7 @@ st.set_page_config(
 )
 st.title("⚽ Football Match Predictor Pro")
 
-# קבוצות לפי ליגה (כולל ליגות חדשות)
+# קבוצות לפי ליגה
 LEAGUE_TEAMS = {
     'Bundesliga': [
         'Augsburg', 'Bayern Munich', 'Bochum', 'Dortmund', 'Ein Frankfurt',
@@ -79,54 +75,53 @@ def load_github_data(github_raw_url):
 @st.cache_data(ttl=3600)  # רענון נתונים כל שעה
 def load_league_data():
     data_sources = {
-        "Premier League": "https://raw.githubusercontent.com/Sh1503/football-match-predictor/main/epl.csv",
-        "La Liga": "https://raw.githubusercontent.com/Sh1503/football-match-predictor/main/laliga.csv",
-        "Serie A": "https://raw.githubusercontent.com/Sh1503/football-match-predictor/main/seriea.csv",
-        "Bundesliga": "https://raw.githubusercontent.com/Sh1503/football-match-predictor/main/bundesliga.csv",
-        "Ligue 1": "https://raw.githubusercontent.com/Sh1503/football-match-predictor/main/ligue1.csv",
-        "Israeli Premier League": "https://raw.githubusercontent.com/username/repo/main/israel.csv",
-        "Champions League": "https://raw.githubusercontent.com/username/repo/main/champions.csv",
-        "Europa League": "https://raw.githubusercontent.com/username/repo/main/europa.csv",
-        "Conference League": "https://raw.githubusercontent.com/username/repo/main/conference.csv"
+        "Premier League": "https://raw.githubusercontent.com/Sh1503/champ/main/epl.csv",
+        "La Liga": "https://raw.githubusercontent.com/Sh1503/champ/main/laliga.csv",
+        "Serie A": "https://raw.githubusercontent.com/Sh1503/champ/main/seriea.csv",
+        "Bundesliga": "https://raw.githubusercontent.com/Sh1503/champ/main/bundesliga.csv",
+        "Ligue 1": "https://raw.githubusercontent.com/Sh1503/champ/main/ligue1.csv",
+        "Israeli Premier League": "https://raw.githubusercontent.com/Sh1503/champ/main/israel_league_list.csv",
+        "Champions League": "https://raw.githubusercontent.com/Sh1503/champ/main/champions.csv",
+        "Europa League": "https://raw.githubusercontent.com/Sh1503/champ/main/europa.csv",
+        "Conference League": "https://raw.githubusercontent.com/Sh1503/champ/main/conference.csv"
     }
     
     league_data = {}
     for league, url in data_sources.items():
         df = load_github_data(url)
         if df is not None:
+            # תיקון שמות עמודות אם נדרש
+            if 'HomeTeam' not in df.columns and 'team_home' in df.columns:
+                df = df.rename(columns={
+                    'team_home': 'HomeTeam',
+                    'team_away': 'AwayTeam',
+                    'goals_home': 'FTHG',
+                    'goals_away': 'FTAG'
+                })
             league_data[league] = df
     return league_data
 
 # פונקציות חיזוי משופרות
 def calculate_expected_goals(home_team, away_team, df):
-    # אם אין נתונים, נחזיר ערכים ברירת מחדל
     if df.empty:
         return 1.5, 1.0
     
-    league_avg_home = df['FTHG'].mean()
-    league_avg_away = df['FTAG'].mean()
+    # בדיקה אם יש נתונים לקבוצות
+    home_data = df[(df['HomeTeam'] == home_team) | (df['AwayTeam'] == home_team)]
+    away_data = df[(df['HomeTeam'] == away_team) | (df['AwayTeam'] == away_team)]
     
-    # אם אין משחקים עבור הקבוצה הביתית, נשתמש בממוצע הליגה
-    home_attack = league_avg_home
-    home_defense = league_avg_away
-    if not df[df['HomeTeam'] == home_team].empty:
-        home_attack = df[df['HomeTeam'] == home_team]['FTHG'].mean()
-        home_defense = df[df['HomeTeam'] == home_team]['FTAG'].mean()
+    if home_data.empty or away_data.empty:
+        return 1.5, 1.0
     
-    away_attack = league_avg_away
-    away_defense = league_avg_home
-    if not df[df['AwayTeam'] == away_team].empty:
-        away_attack = df[df['AwayTeam'] == away_team]['FTAG'].mean()
-        away_defense = df[df['AwayTeam'] == away_team]['FTHG'].mean()
+    # חישוב ממוצעים
+    home_goals_scored = home_data[home_data['HomeTeam'] == home_team]['FTHG'].mean()
+    home_goals_conceded = home_data[home_data['HomeTeam'] == home_team]['FTAG'].mean()
+    away_goals_scored = away_data[away_data['AwayTeam'] == away_team]['FTAG'].mean()
+    away_goals_conceded = away_data[away_data['AwayTeam'] == away_team]['FTHG'].mean()
     
-    # נרמול לפי ממוצעי הליגה
-    home_attack_factor = home_attack / league_avg_home if league_avg_home != 0 else 1.0
-    away_defense_factor = away_defense / league_avg_home if league_avg_home != 0 else 1.0
-    expected_home_goals = league_avg_home * home_attack_factor * away_defense_factor
-    
-    away_attack_factor = away_attack / league_avg_away if league_avg_away != 0 else 1.0
-    home_defense_factor = home_defense / league_avg_away if league_avg_away != 0 else 1.0
-    expected_away_goals = league_avg_away * away_attack_factor * home_defense_factor
+    # חישוב צפי שערים
+    expected_home_goals = (home_goals_scored + away_goals_conceded) / 2
+    expected_away_goals = (away_goals_scored + home_goals_conceded) / 2
     
     return expected_home_goals, expected_away_goals
 
@@ -154,9 +149,15 @@ def predict_match(home_team, away_team, df):
     }
 
 def get_corners_prediction(home_team, away_team, df):
-    if 'HC' in df.columns and 'AC' in df.columns:
-        home_corners = df[df['HomeTeam'] == home_team]['HC'].mean()
-        away_corners = df[df['AwayTeam'] == away_team]['AC'].mean()
+    corners_columns = ['HC', 'AC', 'corners_home', 'corners_away']
+    available_columns = [col for col in corners_columns if col in df.columns]
+    
+    if available_columns:
+        home_col = available_columns[0]
+        away_col = available_columns[1] if len(available_columns) > 1 else available_columns[0]
+        
+        home_corners = df[df['HomeTeam'] == home_team][home_col].mean()
+        away_corners = df[df['AwayTeam'] == away_team][away_col].mean()
         return round(home_corners + away_corners, 1)
     return None
 
