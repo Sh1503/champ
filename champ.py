@@ -5,7 +5,7 @@ from scipy.stats import poisson
 import requests
 from io import StringIO
 
-# Page configuration
+# הגדרות הדף
 st.set_page_config(
     page_title="Football Predictor Pro",
     page_icon="⚽",
@@ -13,7 +13,7 @@ st.set_page_config(
 )
 st.title("⚽ Football Match Predictor Pro")
 
-# Teams per league (example teams or leave blank for automatic)
+# קבוצות לפי ליגה (אפשר להשאיר [] אם אתה רוצה שהאפליקציה תזהה לבד)
 LEAGUE_TEAMS = {
     'Bundesliga': [...],
     'Premier League': [...],
@@ -32,7 +32,7 @@ LEAGUE_TEAMS = {
     'UEFA Conference League': []
 }
 
-# Load data from GitHub
+# טעינת CSV מה-URL
 def load_github_data(github_raw_url):
     try:
         response = requests.get(github_raw_url)
@@ -42,6 +42,7 @@ def load_github_data(github_raw_url):
         st.error(f"שגיאה בטעינת נתונים: {str(e)}")
         return None
 
+# טעינת כל הליגות
 @st.cache_data(ttl=3600)
 def load_league_data():
     data_sources = {
@@ -63,7 +64,7 @@ def load_league_data():
             league_data[league] = df
     return league_data
 
-# Match prediction logic
+# חיזוי תוצאה
 def predict_match(home_team, away_team, df):
     home_goals = df[df['HomeTeam'] == home_team]['FTHG'].mean()
     away_goals = df[df['AwayTeam'] == away_team]['FTAG'].mean()
@@ -85,6 +86,7 @@ def predict_match(home_team, away_team, df):
         "total_corners": get_corners_prediction(home_team, away_team, df)
     }
 
+# חיזוי קרנות אם קיים
 def get_corners_prediction(home_team, away_team, df):
     if 'HC' in df.columns and 'AC' in df.columns:
         home_corners = df[df['HomeTeam'] == home_team]['HC'].mean()
@@ -92,7 +94,7 @@ def get_corners_prediction(home_team, away_team, df):
         return round(home_corners + away_corners, 1)
     return None
 
-# Interface
+# ממשק משתמש
 data = load_league_data()
 selected_league = st.selectbox("בחר ליגה", options=list(data.keys()))
 
