@@ -1,0 +1,6 @@
+Date,HomeTeam,AwayTeam,FTHG,FTAG,HC,AC
+2024-09-15,Real Madrid,Manchester City,1,1,7,5
+2024-09-16,Bayern Munich,Paris SG,3,2,8,4
+2024-09-16,Chelsea,Barcelona,2,2,6,5
+2024-09-17,Liverpool,Juventus,1,0,5,3
+2024-09-17,Atletico Madrid,Inter Milan,2,1,7,4

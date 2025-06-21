@@ -1,0 +1,6 @@
+Date,HomeTeam,AwayTeam,FTHG,FTAG,HC,AC
+2024-09-15,Sevilla,AS Roma,2,0,6,3
+2024-09-16,Arsenal,Napoli,1,1,4,4
+2024-09-16,Bayer Leverkusen,West Ham,3,1,8,2
+2024-09-17,Eintracht Frankfurt,Real Betis,0,0,3,5
+2024-09-17,Feyenoord,Lazio,2,2,5,6
