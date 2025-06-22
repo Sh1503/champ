@@ -58,9 +58,10 @@ LEAGUE_TEAMS = {
         'Young Boys', 'Red Star Belgrade', 'Sparta Prague', 'Slavia Prague',
         'Club Brugge', 'Anderlecht', 'Salzburg', 'Sturm Graz',
         'Galatasaray', 'Fenerbahce', 'Besiktas',
-        'Bodo/Glimt', 'Molde', 'Copenhagen'
+        'Bodo/Glimt', 'Molde', 'Copenhagen',
+        'Maccabi Tel Aviv'
     ],
-    # ליגת אירופה עונת 2025-2026 (כולל מהסיבוב הראשון)
+    # ליגת אירופה עונת 2025-2026 (מעודכנת)
     'Europa League': [
         'Man United', 'Tottenham', 'West Ham', 'Brighton', 'Fulham',
         'Roma', 'Lazio', 'Fiorentina', 'Napoli', 'Torino',
@@ -75,16 +76,26 @@ LEAGUE_TEAMS = {
         'Slavia Prague', 'Viktoria Plzen', 'Sparta Prague',
         'Anderlecht', 'Union SG', 'Gent', 'Club Brugge',
         'Midtjylland', 'Copenhagen', 'Bodo/Glimt', 'Molde',
-        'Elfsborg', 'Malmo', 'Hammarby', 'AIK',
-        'Sheriff', 'Petrocub', 'Pyunik', 'Ararat-Armenia',
+        'Elfsborg', 'Malmo', 'Hammarby', 'AIK', 'Hacken',
+        'Sheriff Tiraspol', 'Petrocub', 'Pyunik', 'Ararat-Armenia',
         'Riga FC', 'RFS', 'Flora', 'Levadia',
         'Zalgiris', 'Suduva', 'Dinamo Minsk', 'BATE',
-        'Partizan', 'Red Star', 'Vojvodina',
+        'Partizan Belgrade', 'Red Star', 'Vojvodina',
         'Dinamo Zagreb', 'Rijeka', 'Hajduk Split',
-        'Maribor', 'Olimpija', 'Mura',
-        'Shamrock Rovers', 'Derry City', 'St Patricks'
+        'Maribor', 'Olimpija', 'Mura', 'Celje',
+        'Shamrock Rovers', 'Derry City', 'St Patricks',
+        'Hapoel Beer Sheva', 'Maccabi Tel Aviv', 'Maccabi Haifa',
+        'Levski Sofia', 'CSKA Sofia', 'Arda Kardzhali',
+        'Legia Warsaw', 'Cracovia', 'Pogon Szczecin',
+        'Paksi FC', 'Ferencvaros', 'Debrecen',
+        'AEK Larnaca', 'Omonia', 'APOEL',
+        'Sabah Baku', 'Zira', 'Qarabag',
+        'Spartak Trnava', 'Zilina', 'Slovan Bratislava',
+        'Aktobe', 'Astana', 'Ordabasy',
+        'Ilves Tampere', 'HJK Helsinki', 'KuPS',
+        'Prishtina', 'Ballkani', 'Drita'
     ],
-    # ליגת הקונפרנס עונת 2025-2026 (מורחבת)
+    # ליגת הקונפרנס עונת 2025-2026 (מעודכנת)
     'Conference League': [
         'Chelsea', 'Brighton', 'Fulham', 'Crystal Palace', 'Brentford',
         'Fiorentina', 'Atalanta', 'Roma', 'Lazio', 'Genoa', 'Empoli',
@@ -103,14 +114,14 @@ LEAGUE_TEAMS = {
         'Borac', 'Zrinjski', 'Jagiellonia', 'Legia Warsaw',
         'Rapid Vienna', 'LASK', 'Austria Vienna', 'Sturm Graz',
         'Pafos', 'Omonia', 'APOEL', 'AEL',
-        'Maccabi Tel Aviv', 'Maccabi Haifa', 'Hapoel Beer Sheva',
+        'Maccabi Haifa', 'Beitar Jerusalem',
         'Dinamo Tbilisi', 'Torpedo Kutaisi', 'Sabah', 'Zira',
         'Ararat-Armenia', 'Pyunik', 'Alashkert', 'Noah',
         'Ballkani', 'Drita', 'Llapi', 'Prishtina',
         'Partizan', 'Red Star', 'Cukaricki', 'Vojvodina',
         'Dinamo Zagreb', 'Rijeka', 'Hajduk Split', 'Osijek',
         'Maribor', 'Olimpija', 'Mura', 'Domzale',
-        'Levski', 'CSKA Sofia', 'Ludogorets', 'Arda',
+        'CSKA Sofia', 'Ludogorets', 'Arda',
         'FCSB', 'CFR Cluj', 'Rapid Bucharest', 'Universitatea Craiova',
         'Slovan Bratislava', 'Spartak Trnava', 'Zilina', 'Dunajska Streda',
         'Sparta Prague', 'Slavia Prague', 'Viktoria Plzen', 'Jablonec',
@@ -119,6 +130,13 @@ LEAGUE_TEAMS = {
         'HJK Helsinki', 'KuPS', 'FC Inter Turku', 'Honka',
         'Flora Tallinn', 'Levadia', 'Kalju', 'Paide',
         'Riga FC', 'Valmiera', 'Liepaja', 'Jelgava'
+    ],
+    # ליגת העל הישראלית עונת 2025-2026
+    'Israeli Premier League': [
+        'Maccabi Tel Aviv', 'Maccabi Haifa', 'Hapoel Beer Sheva', 'Beitar Jerusalem',
+        'Hapoel Tel Aviv', 'Maccabi Netanya', 'Hapoel Haifa', 'Ashdod',
+        'Hapoel Jerusalem', 'Bnei Sakhnin', 'Maccabi Bnei Raina', 'Ironi Kiryat Shmona',
+        'Hapoel Katamon', 'Hapoel Petah Tikva', 'Hapoel Hadera', 'Maccabi Petah Tikva'
     ]
 }
 
@@ -150,6 +168,7 @@ EUROPEAN_TEAM_STATS = {
     'Lyon': {'home_goals': 1.9, 'away_goals': 1.3, 'home_conceded': 1.2, 'away_conceded': 1.5, 'strength': 72},
     'Athletic Bilbao': {'home_goals': 1.8, 'away_goals': 1.2, 'home_conceded': 1.1, 'away_conceded': 1.4, 'strength': 73},
     'AC Fiorentina': {'home_goals': 1.9, 'away_goals': 1.3, 'home_conceded': 1.2, 'away_conceded': 1.5, 'strength': 73},
+    'Maccabi Tel Aviv': {'home_goals': 1.8, 'away_goals': 1.2, 'home_conceded': 1.3, 'away_conceded': 1.6, 'strength': 68},
     
     # קבוצות מהמוקדמות
     'Celtic': {'home_goals': 2.3, 'away_goals': 1.5, 'home_conceded': 1.0, 'away_conceded': 1.4, 'strength': 72},
@@ -186,6 +205,7 @@ EUROPEAN_TEAM_STATS = {
     'Sevilla': {'home_goals': 1.6, 'away_goals': 1.0, 'home_conceded': 1.2, 'away_conceded': 1.5, 'strength': 68},
     'AZ Alkmaar': {'home_goals': 1.9, 'away_goals': 1.3, 'home_conceded': 1.1, 'away_conceded': 1.4, 'strength': 72},
     'Twente': {'home_goals': 1.8, 'away_goals': 1.2, 'home_conceded': 1.2, 'away_conceded': 1.5, 'strength': 70},
+    'Hapoel Beer Sheva': {'home_goals': 1.7, 'away_goals': 1.1, 'home_conceded': 1.3, 'away_conceded': 1.6, 'strength': 67},
     
     # Conference League - טיר נמוך יותר
     'Brighton': {'home_goals': 1.7, 'away_goals': 1.1, 'home_conceded': 1.3, 'away_conceded': 1.6, 'strength': 68},
@@ -205,7 +225,9 @@ EUROPEAN_TEAM_STATS = {
     'St Gallen': {'home_goals': 1.3, 'away_goals': 0.7, 'home_conceded': 1.4, 'away_conceded': 1.7, 'strength': 61},
     'Lugano': {'home_goals': 1.2, 'away_goals': 0.6, 'home_conceded': 1.5, 'away_conceded': 1.8, 'strength': 59},
     'Genoa': {'home_goals': 1.4, 'away_goals': 0.8, 'home_conceded': 1.4, 'away_conceded': 1.7, 'strength': 63},
-    'Empoli': {'home_goals': 1.3, 'away_goals': 0.7, 'home_conceded': 1.4, 'away_conceded': 1.7, 'strength': 62}
+    'Empoli': {'home_goals': 1.3, 'away_goals': 0.7, 'home_conceded': 1.4, 'away_conceded': 1.7, 'strength': 62},
+    'Maccabi Haifa': {'home_goals': 1.6, 'away_goals': 1.0, 'home_conceded': 1.3, 'away_conceded': 1.6, 'strength': 65},
+    'Beitar Jerusalem': {'home_goals': 1.4, 'away_goals': 0.8, 'home_conceded': 1.4, 'away_conceded': 1.7, 'strength': 62}
 }
 
 # הוספת נתונים בסיסיים לקבוצות אחרות
@@ -237,20 +259,36 @@ def load_github_data(github_raw_url):
 def load_league_data():
     data_sources = {
         "Premier League": [
-            "https://raw.githubusercontent.com/Sh1503/football-match-predictor/main/epl.csv"
+            "https://raw.githubusercontent.com/Sh1503/football-match-predictor/main/epl.csv",
+            "https://raw.githubusercontent.com/Sh1503/football-match-predictor/main/premier_league_csv.csv"
         ],
         "La Liga": [
-            "https://raw.githubusercontent.com/Sh1503/football-match-predictor/main/laliga.csv"
+            "https://raw.githubusercontent.com/Sh1503/football-match-predictor/main/laliga.csv",
+            "https://raw.githubusercontent.com/Sh1503/football-match-predictor/main/laliga_csv.csv"
         ],
         "Serie A": [
-            "https://raw.githubusercontent.com/Sh1503/football-match-predictor/main/seriea.csv"
+            "https://raw.githubusercontent.com/Sh1503/football-match-predictor/main/seriea.csv",
+            "https://raw.githubusercontent.com/Sh1503/football-match-predictor/main/serie_a_csv.csv"
         ],
         "Bundesliga": [
             "https://raw.githubusercontent.com/Sh1503/football-match-predictor/main/bundesliga.csv",
-            "https://raw.githubusercontent.com/Sh1503/football-match-predictor/main/bundesliga_2025_2026.csv"
+            "https://raw.githubusercontent.com/Sh1503/football-match-predictor/main/bundesliga_csv.csv"
         ],
         "Ligue 1": [
-            "https://raw.githubusercontent.com/Sh1503/football-match-predictor/main/ligue1.csv"
+            "https://raw.githubusercontent.com/Sh1503/football-match-predictor/main/ligue1.csv",
+            "https://raw.githubusercontent.com/Sh1503/football-match-predictor/main/ligue1_csv.csv"
+        ],
+        "Israeli Premier League": [
+            "https://raw.githubusercontent.com/Sh1503/football-match-predictor/main/israeli_premier_league_csv.csv"
+        ],
+        "Champions League": [
+            "https://raw.githubusercontent.com/Sh1503/football-match-predictor/main/champions_league_csv.csv"
+        ],
+        "Europa League": [
+            "https://raw.githubusercontent.com/Sh1503/football-match-predictor/main/europa_league_csv.csv"
+        ],
+        "Conference League": [
+            "https://raw.githubusercontent.com/Sh1503/football-match-predictor/main/conference_league_csv.csv"
         ]
     }
     
