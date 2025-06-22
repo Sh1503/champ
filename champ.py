@@ -11,10 +11,10 @@ st.set_page_config(
     page_icon="⚽",
     layout="centered"
 )
-st.title("⚽ Football Match Predictor Pro")
+st.title("⚽ Football Match Predictor Pro - עונת 2025/2026")
 
 # ----------------------------
-# קבוצות לפי ליגה (עונת 2024-2025)
+# קבוצות לפי ליגה (עונת 2025-2026)
 # ----------------------------
 LEAGUE_TEAMS = {
     'Bundesliga': [
@@ -25,15 +25,15 @@ LEAGUE_TEAMS = {
     ],
     'Premier League': [
         'Arsenal', 'Aston Villa', 'Bournemouth', 'Brentford', 'Brighton',
-        'Chelsea', 'Crystal Palace', 'Everton', 'Fulham', 'Ipswich',
-        'Leicester', 'Liverpool', 'Man City', 'Man United', 'Newcastle',
-        "Nott'm Forest", 'Southampton', 'Tottenham', 'West Ham', 'Wolves'
+        'Burnley', 'Chelsea', 'Crystal Palace', 'Everton', 'Fulham',
+        'Leeds United', 'Liverpool', 'Man City', 'Man United', 'Newcastle',
+        "Nott'm Forest", 'Sunderland', 'Tottenham', 'West Ham', 'Wolves'
     ],
     'La Liga': [
-        'Alaves', 'Ath Bilbao', 'Ath Madrid', 'Barcelona', 'Betis', 'Celta',
-        'Espanol', 'Getafe', 'Girona', 'Las Palmas', 'Leganes', 'Mallorca',
-        'Osasuna', 'Real Madrid', 'Sevilla', 'Sociedad', 'Valencia',
-        'Valladolid', 'Vallecano', 'Villarreal'
+        'Alaves', 'Almeria', 'Ath Bilbao', 'Ath Madrid', 'Barcelona', 'Betis',
+        'Cadiz', 'Celta', 'Getafe', 'Girona', 'Las Palmas', 'Leganes',
+        'Mallorca', 'Osasuna', 'Real Madrid', 'Sevilla', 'Sociedad',
+        'Valencia', 'Valladolid', 'Villarreal'
     ],
     'Ligue 1': [
         'Angers', 'Auxerre', 'Brest', 'Le Havre', 'Lens', 'Lille', 'Lyon',
@@ -45,89 +45,152 @@ LEAGUE_TEAMS = {
         'Genoa', 'Inter', 'Juventus', 'Lazio', 'Lecce', 'Milan', 'Monza',
         'Napoli', 'Parma', 'Roma', 'Torino', 'Udinese', 'Venezia', 'Verona'
     ],
-    # ליגת העל הישראלית עונת 2024-2025
-    'Israeli Premier League': [
-        'מכבי תל אביב', 'מכבי חיפה', 'בית"ר ירושלים', 'הפועל באר שבע',
-        'הפועל חיפה', 'מכבי נתניה', 'מכבי פתח תקווה', 'בני סכנין',
-        'הפועל ירושלים', 'עירוני קריית שמונה', 'מועדון ספורט אשדוד',
-        'מכבי בני ריינה', 'הפועל חדרה', 'הפועל תל אביב'
-    ],
-    # ליגות אירופיות עונת 2024-2025 - כולל קבוצות מהמוקדמות
+    # ליגת האלופות עונת 2025-2026
     'Champions League': [
-        'Real Madrid', 'Barcelona', 'Bayern Munich', 'Man City', 'Paris SG',
-        'Liverpool', 'Chelsea', 'Inter', 'Milan', 'Juventus', 'Dortmund',
-        'Arsenal', 'Ath Madrid', 'Napoli', 'Benfica', 'Porto', 'Sporting',
-        'PSV', 'Celtic', 'Rangers', 'Shakhtar', 'RB Leipzig', 'Leverkusen',
-        'Atalanta', 'Bologna', 'Aston Villa', 'Monaco', 'Lille', 'Brest',
-        'Young Boys', 'Red Star Belgrade', 'Sturm Graz', 'Sparta Prague',
-        'Club Brugge', 'Salzburg', 'Slovan Bratislava', 'Dinamo Zagreb'
+        'Real Madrid', 'Barcelona', 'Ath Madrid', 'Athletic Bilbao',
+        'Bayern Munich', 'Dortmund', 'RB Leipzig', 'Leverkusen',
+        'Inter', 'Milan', 'Juventus', 'Atalanta', 'Bologna',
+        'Man City', 'Arsenal', 'Liverpool', 'Chelsea', 'Aston Villa',
+        'Paris SG', 'Monaco', 'Lille', 'Brest',
+        'Celtic', 'Rangers', 'PSV', 'Feyenoord',
+        'Benfica', 'Porto', 'Sporting',
+        'Shakhtar', 'Dynamo Kyiv',
+        'Young Boys', 'Red Star Belgrade', 'Sparta Prague',
+        'Club Brugge', 'Salzburg'
     ],
+    # ליגת אירופה עונת 2025-2026 (כולל מהסיבוב הראשון)
     'Europa League': [
-        'Man United', 'Tottenham', 'West Ham', 'Roma', 'Lazio', 'Fiorentina',
-        'Ein Frankfurt', 'Hoffenheim', 'Lyon', 'Nice', 'Marseille', 'Rennes',
-        'Villarreal', 'Betis', 'Sociedad', 'Ath Bilbao', 'Valencia', 'Sevilla',
-        'Ajax', 'AZ Alkmaar', 'Twente', 'Rangers', 'Hearts', 'Braga',
-        'Porto', 'Sporting', 'Fenerbahce', 'Galatasaray', 'Besiktas',
-        'Olympiacos', 'PAOK', 'AEK Athens', 'Panathinaikos', 'Dynamo Kyiv',
-        'Qarabag', 'Ludogorets', 'Slavia Prague', 'Viktoria Plzen',
-        'Real Sociedad', 'Eintracht', 'Union SG', 'Anderlecht', 'Royale Union',
-        'Midtjylland', 'Bodo/Glimt', 'Molde', 'Elfsborg', 'Malmo'
+        'Man United', 'Tottenham', 'West Ham', 'Newcastle',
+        'Roma', 'Lazio', 'Fiorentina', 'Napoli',
+        'Ein Frankfurt', 'Hoffenheim', 'Union Berlin',
+        'Lyon', 'Nice', 'Marseille', 'Rennes', 'Strasbourg',
+        'Villarreal', 'Betis', 'Sociedad', 'Sevilla', 'Valencia',
+        'Ajax', 'AZ Alkmaar', 'Twente', 'Utrecht',
+        'Braga', 'Vitoria Guimaraes',
+        'Fenerbahce', 'Galatasaray', 'Besiktas', 'Trabzonspor',
+        'Olympiacos', 'PAOK', 'AEK Athens', 'Panathinaikos',
+        'Qarabag', 'Ludogorets', 'FCSB', 'CFR Cluj',
+        'Slavia Prague', 'Viktoria Plzen', 'Sparta Prague',
+        'Anderlecht', 'Union SG', 'Gent', 'Club Brugge',
+        'Midtjylland', 'Copenhagen', 'Bodo/Glimt', 'Molde',
+        'Elfsborg', 'Malmo', 'Hammarby', 'AIK',
+        'Sheriff', 'Petrocub', 'Pyunik', 'Ararat-Armenia',
+        'Riga FC', 'RFS', 'Flora', 'Levadia',
+        'Zalgiris', 'Suduva', 'Dinamo Minsk', 'BATE',
+        'Partizan', 'Red Star', 'Vojvodina',
+        'Dinamo Zagreb', 'Rijeka', 'Hajduk Split',
+        'Maribor', 'Olimpija', 'Mura',
+        'Shamrock Rovers', 'Derry City', 'St Patricks'
     ],
+    # ליגת הקונפרנס עונת 2025-2026 (כולל מהסיבוב הראשון)
     'Conference League': [
-        'Chelsea', 'Fiorentina', 'Roma', 'Atalanta', 'Nice', 'Marseille',
-        'Rennes', 'Lyon', 'Toulouse', 'Villarreal', 'Betis', 'Valencia',
-        'Espanol', 'Ein Frankfurt', 'Union Berlin', 'Hoffenheim', 'Freiburg',
-        'Ajax', 'AZ Alkmaar', 'Twente', 'Utrecht', 'Vitesse', 'Celtic',
-        'Rangers', 'Hearts', 'Aberdeen', 'PAOK', 'Olympiacos', 'AEK Athens',
-        'Panathinaikos', 'Astana', 'Petrocub', 'Vikingur', 'TNS',
-        'Shamrock Rovers', 'Celje', 'Cercle Brugge', 'Gent', 'Molde',
-        'Djurgarden', 'Heidenheim', 'St Gallen', 'Lugano', 'Borac',
-        'Jagiellonia', 'Legia Warsaw', 'Rapid Vienna', 'LASK', 'Pafos'
+        'Chelsea', 'Brighton', 'Fulham',
+        'Fiorentina', 'Atalanta', 'Roma', 'Lazio',
+        'Nice', 'Marseille', 'Rennes', 'Lyon', 'Toulouse',
+        'Villarreal', 'Betis', 'Valencia', 'Getafe',
+        'Ein Frankfurt', 'Union Berlin', 'Hoffenheim', 'Freiburg',
+        'Ajax', 'AZ Alkmaar', 'Twente', 'Utrecht', 'Vitesse',
+        'Celtic', 'Rangers', 'Hearts', 'Aberdeen',
+        'PAOK', 'Olympiacos', 'AEK Athens', 'Panathinaikos',
+        'Astana', 'Petrocub', 'Vikingur', 'TNS',
+        'Shamrock Rovers', 'Derry City', 'Celje', 'Olimpija',
+        'Cercle Brugge', 'Gent', 'Anderlecht', 'Standard Liege',
+        'Molde', 'Bodo/Glimt', 'Rosenborg', 'Viking',
+        'Djurgarden', 'Hammarby', 'Elfsborg', 'Hacken',
+        'Heidenheim', 'St Gallen', 'Lugano', 'Basel',
+        'Borac', 'Zrinjski', 'Jagiellonia', 'Legia Warsaw',
+        'Rapid Vienna', 'LASK', 'Austria Vienna', 'Sturm Graz',
+        'Pafos', 'Omonia', 'APOEL', 'AEL',
+        'Maccabi Tel Aviv', 'Maccabi Haifa', 'Hapoel Beer Sheva',
+        'Dinamo Tbilisi', 'Torpedo Kutaisi', 'Sabah', 'Zira',
+        'Ararat-Armenia', 'Pyunik', 'Alashkert', 'Noah',
+        'Ballkani', 'Drita', 'Llapi', 'Prishtina',
+        'Partizan', 'Red Star', 'Cukaricki', 'Vojvodina',
+        'Dinamo Zagreb', 'Rijeka', 'Hajduk Split', 'Osijek',
+        'Maribor', 'Olimpija', 'Mura', 'Domzale',
+        'Levski', 'CSKA Sofia', 'Ludogorets', 'Arda',
+        'FCSB', 'CFR Cluj', 'Rapid Bucharest', 'Universitatea Craiova',
+        'Slovan Bratislava', 'Spartak Trnava', 'Zilina', 'Dunajska Streda',
+        'Sparta Prague', 'Slavia Prague', 'Viktoria Plzen', 'Jablonec',
+        'Ferencvaros', 'Puskas Academy', 'Debrecen', 'Ujpest',
+        'Lechia Gdansk', 'Cracovia', 'Pogon Szczecin', 'Warta Poznan'
     ]
 }
 
-# נתוני ביצועים של קבוצות אירופיות ישראליות (מבוסס על עונות קודמות ודירוגים)
+# נתוני ביצועים של קבוצות אירופיות (מעודכן לעונת 2025-2026)
 EUROPEAN_TEAM_STATS = {
     # Champions League - טיר עליון
-    'Real Madrid': {'home_goals': 2.8, 'away_goals': 2.2, 'home_conceded': 0.9, 'away_conceded': 1.1, 'strength': 95},
-    'Barcelona': {'home_goals': 2.6, 'away_goals': 2.0, 'home_conceded': 1.0, 'away_conceded': 1.3, 'strength': 90},
-    'Bayern Munich': {'home_goals': 2.9, 'away_goals': 2.3, 'home_conceded': 0.8, 'away_conceded': 1.0, 'strength': 93},
-    'Man City': {'home_goals': 2.7, 'away_goals': 2.1, 'home_conceded': 0.9, 'away_conceded': 1.2, 'strength': 92},
-    'Paris SG': {'home_goals': 2.5, 'away_goals': 1.9, 'home_conceded': 1.0, 'away_conceded': 1.3, 'strength': 88},
-    'Liverpool': {'home_goals': 2.4, 'away_goals': 1.8, 'home_conceded': 1.1, 'away_conceded': 1.4, 'strength': 87},
-    'Inter': {'home_goals': 2.3, 'away_goals': 1.7, 'home_conceded': 1.0, 'away_conceded': 1.2, 'strength': 85},
-    'Arsenal': {'home_goals': 2.3, 'away_goals': 1.7, 'home_conceded': 1.1, 'away_conceded': 1.4, 'strength': 84},
-    'Dortmund': {'home_goals': 2.4, 'away_goals': 1.8, 'home_conceded': 1.3, 'away_conceded': 1.6, 'strength': 83},
-    'Chelsea': {'home_goals': 2.2, 'away_goals': 1.6, 'home_conceded': 1.2, 'away_conceded': 1.5, 'strength': 82},
-    'Ath Madrid': {'home_goals': 1.9, 'away_goals': 1.3, 'home_conceded': 0.8, 'away_conceded': 1.1, 'strength': 81},
-    'Milan': {'home_goals': 2.1, 'away_goals': 1.5, 'home_conceded': 1.2, 'away_conceded': 1.4, 'strength': 80},
-    'Napoli': {'home_goals': 2.2, 'away_goals': 1.6, 'home_conceded': 1.2, 'away_conceded': 1.5, 'strength': 79},
-    'Juventus': {'home_goals': 2.0, 'away_goals': 1.4, 'home_conceded': 1.1, 'away_conceded': 1.3, 'strength': 78},
-    'Atalanta': {'home_goals': 2.2, 'away_goals': 1.6, 'home_conceded': 1.3, 'away_conceded': 1.6, 'strength': 77},
-    'Bologna': {'home_goals': 1.8, 'away_goals': 1.2, 'home_conceded': 1.2, 'away_conceded': 1.5, 'strength': 73},
-    'Aston Villa': {'home_goals': 2.0, 'away_goals': 1.4, 'home_conceded': 1.3, 'away_conceded': 1.6, 'strength': 75},
-    'Monaco': {'home_goals': 2.1, 'away_goals': 1.5, 'home_conceded': 1.2, 'away_conceded': 1.5, 'strength': 76},
-    'Lille': {'home_goals': 1.7, 'away_goals': 1.1, 'home_conceded': 1.1, 'away_conceded': 1.4, 'strength': 72},
-    'Brest': {'home_goals': 1.6, 'away_goals': 1.0, 'home_conceded': 1.3, 'away_conceded': 1.6, 'strength': 68},
+    'Real Madrid': {'home_goals': 2.9, 'away_goals': 2.3, 'home_conceded': 0.8, 'away_conceded': 1.0, 'strength': 96},
+    'Barcelona': {'home_goals': 2.7, 'away_goals': 2.1, 'home_conceded': 0.9, 'away_conceded': 1.2, 'strength': 91},
+    'Bayern Munich': {'home_goals': 3.0, 'away_goals': 2.4, 'home_conceded': 0.7, 'away_conceded': 0.9, 'strength': 94},
+    'Man City': {'home_goals': 2.8, 'away_goals': 2.2, 'home_conceded': 0.8, 'away_conceded': 1.1, 'strength': 93},
+    'Paris SG': {'home_goals': 2.6, 'away_goals': 2.0, 'home_conceded': 0.9, 'away_conceded': 1.2, 'strength': 89},
+    'Liverpool': {'home_goals': 2.5, 'away_goals': 1.9, 'home_conceded': 1.0, 'away_conceded': 1.3, 'strength': 88},
+    'Inter': {'home_goals': 2.4, 'away_goals': 1.8, 'home_conceded': 0.9, 'away_conceded': 1.1, 'strength': 86},
+    'Arsenal': {'home_goals': 2.4, 'away_goals': 1.8, 'home_conceded': 1.0, 'away_conceded': 1.3, 'strength': 85},
+    'Dortmund': {'home_goals': 2.5, 'away_goals': 1.9, 'home_conceded': 1.2, 'away_conceded': 1.5, 'strength': 84},
+    'Chelsea': {'home_goals': 2.3, 'away_goals': 1.7, 'home_conceded': 1.1, 'away_conceded': 1.4, 'strength': 83},
+    'Ath Madrid': {'home_goals': 2.0, 'away_goals': 1.4, 'home_conceded': 0.7, 'away_conceded': 1.0, 'strength': 82},
+    'Milan': {'home_goals': 2.2, 'away_goals': 1.6, 'home_conceded': 1.1, 'away_conceded': 1.3, 'strength': 81},
+    'Napoli': {'home_goals': 2.3, 'away_goals': 1.7, 'home_conceded': 1.1, 'away_conceded': 1.4, 'strength': 80},
+    'Juventus': {'home_goals': 2.1, 'away_goals': 1.5, 'home_conceded': 1.0, 'away_conceded': 1.2, 'strength': 79},
+    'Atalanta': {'home_goals': 2.3, 'away_goals': 1.7, 'home_conceded': 1.2, 'away_conceded': 1.5, 'strength': 78},
+    'Bologna': {'home_goals': 1.9, 'away_goals': 1.3, 'home_conceded': 1.1, 'away_conceded': 1.4, 'strength': 74},
+    'Aston Villa': {'home_goals': 2.1, 'away_goals': 1.5, 'home_conceded': 1.2, 'away_conceded': 1.5, 'strength': 76},
+    'Monaco': {'home_goals': 2.2, 'away_goals': 1.6, 'home_conceded': 1.1, 'away_conceded': 1.4, 'strength': 77},
+    'Lille': {'home_goals': 1.8, 'away_goals': 1.2, 'home_conceded': 1.0, 'away_conceded': 1.3, 'strength': 73},
+    'Brest': {'home_goals': 1.7, 'away_goals': 1.1, 'home_conceded': 1.2, 'away_conceded': 1.5, 'strength': 69},
     
     # קבוצות מהמוקדמות
-    'Celtic': {'home_goals': 2.2, 'away_goals': 1.4, 'home_conceded': 1.1, 'away_conceded': 1.5, 'strength': 71},
-    'Rangers': {'home_goals': 2.0, 'away_goals': 1.2, 'home_conceded': 1.2, 'away_conceded': 1.6, 'strength': 69},
-    'PSV': {'home_goals': 2.1, 'away_goals': 1.5, 'home_conceded': 1.0, 'away_conceded': 1.3, 'strength': 74},
-    'Benfica': {'home_goals': 2.3, 'away_goals': 1.7, 'home_conceded': 1.0, 'away_conceded': 1.3, 'strength': 76},
-    'Porto': {'home_goals': 2.2, 'away_goals': 1.6, 'home_conceded': 1.1, 'away_conceded': 1.4, 'strength': 75},
-    'Sporting': {'home_goals': 2.4, 'away_goals': 1.8, 'home_conceded': 1.0, 'away_conceded': 1.3, 'strength': 77},
-    'Shakhtar': {'home_goals': 1.9, 'away_goals': 1.3, 'home_conceded': 1.2, 'away_conceded': 1.5, 'strength': 70},
-    'RB Leipzig': {'home_goals': 2.0, 'away_goals': 1.4, 'home_conceded': 1.2, 'away_conceded': 1.5, 'strength': 76},
-    'Leverkusen': {'home_goals': 2.3, 'away_goals': 1.7, 'home_conceded': 1.1, 'away_conceded': 1.4, 'strength': 79},
+    'Celtic': {'home_goals': 2.3, 'away_goals': 1.5, 'home_conceded': 1.0, 'away_conceded': 1.4, 'strength': 72},
+    'Rangers': {'home_goals': 2.1, 'away_goals': 1.3, 'home_conceded': 1.1, 'away_conceded': 1.5, 'strength': 70},
+    'PSV': {'home_goals': 2.2, 'away_goals': 1.6, 'home_conceded': 0.9, 'away_conceded': 1.2, 'strength': 75},
+    'Benfica': {'home_goals': 2.4, 'away_goals': 1.8, 'home_conceded': 0.9, 'away_conceded': 1.2, 'strength': 77},
+    'Porto': {'home_goals': 2.3, 'away_goals': 1.7, 'home_conceded': 1.0, 'away_conceded': 1.3, 'strength': 76},
+    'Sporting': {'home_goals': 2.5, 'away_goals': 1.9, 'home_conceded': 0.9, 'away_conceded': 1.2, 'strength': 78},
+    'Shakhtar': {'home_goals': 2.0, 'away_goals': 1.4, 'home_conceded': 1.1, 'away_conceded': 1.4, 'strength': 71},
+    'RB Leipzig': {'home_goals': 2.1, 'away_goals': 1.5, 'home_conceded': 1.1, 'away_conceded': 1.4, 'strength': 77},
+    'Leverkusen': {'home_goals': 2.4, 'away_goals': 1.8, 'home_conceded': 1.0, 'away_conceded': 1.3, 'strength': 80},
     
-    # קבוצות ישראליות
-    'מכבי תל אביב': {'home_goals': 1.8, 'away_goals': 1.2, 'home_conceded': 1.3, 'away_conceded': 1.6, 'strength': 65},
-    'מכבי חיפה': {'home_goals': 1.6, 'away_goals': 1.0, 'home_conceded': 1.4, 'away_conceded': 1.7, 'strength': 62},
-    'בית"ר ירושלים': {'home_goals': 1.7, 'away_goals': 1.1, 'home_conceded': 1.3, 'away_conceded': 1.6, 'strength': 63},
-    'הפועל באר שבע': {'home_goals': 1.5, 'away_goals': 0.9, 'home_conceded': 1.4, 'away_conceded': 1.7, 'strength': 60},
-    'הפועל חיפה': {'home_goals': 1.4, 'away_goals': 0.8, 'home_conceded': 1.5, 'away_conceded': 1.8, 'strength': 58},
-    'מכבי נתניה': {'home_goals': 1.3, 'away_goals': 0.7, 'home_conceded': 1.6, 'away_conceded': 1.9, 'strength': 55}
+    # Europa League - טיר בינוני
+    'Man United': {'home_goals': 2.0, 'away_goals': 1.4, 'home_conceded': 1.2, 'away_conceded': 1.5, 'strength': 75},
+    'Tottenham': {'home_goals': 2.2, 'away_goals': 1.6, 'home_conceded': 1.3, 'away_conceded': 1.6, 'strength': 76},
+    'West Ham': {'home_goals': 1.8, 'away_goals': 1.2, 'home_conceded': 1.3, 'away_conceded': 1.6, 'strength': 71},
+    'Newcastle': {'home_goals': 2.0, 'away_goals': 1.4, 'home_conceded': 1.2, 'away_conceded': 1.5, 'strength': 74},
+    'Roma': {'home_goals': 2.0, 'away_goals': 1.4, 'home_conceded': 1.2, 'away_conceded': 1.5, 'strength': 74},
+    'Lazio': {'home_goals': 2.1, 'away_goals': 1.5, 'home_conceded': 1.1, 'away_conceded': 1.4, 'strength': 75},
+    'Fiorentina': {'home_goals': 1.9, 'away_goals': 1.3, 'home_conceded': 1.2, 'away_conceded': 1.5, 'strength': 73},
+    'Ein Frankfurt': {'home_goals': 2.0, 'away_goals': 1.4, 'home_conceded': 1.2, 'away_conceded': 1.5, 'strength': 74},
+    'Hoffenheim': {'home_goals': 1.8, 'away_goals': 1.2, 'home_conceded': 1.3, 'away_conceded': 1.6, 'strength': 70},
+    'Union Berlin': {'home_goals': 1.7, 'away_goals': 1.1, 'home_conceded': 1.2, 'away_conceded': 1.5, 'strength': 69},
+    'Lyon': {'home_goals': 1.9, 'away_goals': 1.3, 'home_conceded': 1.2, 'away_conceded': 1.5, 'strength': 72},
+    'Nice': {'home_goals': 1.8, 'away_goals': 1.2, 'home_conceded': 1.1, 'away_conceded': 1.4, 'strength': 71},
+    'Marseille': {'home_goals': 2.0, 'away_goals': 1.4, 'home_conceded': 1.3, 'away_conceded': 1.6, 'strength': 73},
+    'Villarreal': {'home_goals': 1.9, 'away_goals': 1.3, 'home_conceded': 1.1, 'away_conceded': 1.4, 'strength': 72},
+    'Betis': {'home_goals': 1.8, 'away_goals': 1.2, 'home_conceded': 1.2, 'away_conceded': 1.5, 'strength': 71},
+    'Sociedad': {'home_goals': 1.7, 'away_goals': 1.1, 'home_conceded': 1.1, 'away_conceded': 1.4, 'strength': 70},
+    'Sevilla': {'home_goals': 1.6, 'away_goals': 1.0, 'home_conceded': 1.2, 'away_conceded': 1.5, 'strength': 68},
+    'Ajax': {'home_goals': 2.1, 'away_goals': 1.5, 'home_conceded': 1.2, 'away_conceded': 1.5, 'strength': 74},
+    'AZ Alkmaar': {'home_goals': 1.9, 'away_goals': 1.3, 'home_conceded': 1.1, 'away_conceded': 1.4, 'strength': 72},
+    'Twente': {'home_goals': 1.8, 'away_goals': 1.2, 'home_conceded': 1.2, 'away_conceded': 1.5, 'strength': 70},
+    
+    # Conference League - טיר נמוך יותר
+    'Brighton': {'home_goals': 1.7, 'away_goals': 1.1, 'home_conceded': 1.3, 'away_conceded': 1.6, 'strength': 68},
+    'Fulham': {'home_goals': 1.6, 'away_goals': 1.0, 'home_conceded': 1.3, 'away_conceded': 1.6, 'strength': 67},
+    'Hearts': {'home_goals': 1.5, 'away_goals': 0.9, 'home_conceded': 1.4, 'away_conceded': 1.7, 'strength': 64},
+    'Aberdeen': {'home_goals': 1.4, 'away_goals': 0.8, 'home_conceded': 1.4, 'away_conceded': 1.7, 'strength': 63},
+    'PAOK': {'home_goals': 1.6, 'away_goals': 1.0, 'home_conceded': 1.2, 'away_conceded': 1.5, 'strength': 66},
+    'Olympiacos': {'home_goals': 1.7, 'away_goals': 1.1, 'home_conceded': 1.1, 'away_conceded': 1.4, 'strength': 68},
+    'AEK Athens': {'home_goals': 1.5, 'away_goals': 0.9, 'home_conceded': 1.3, 'away_conceded': 1.6, 'strength': 65},
+    'Panathinaikos': {'home_goals': 1.4, 'away_goals': 0.8, 'home_conceded': 1.3, 'away_conceded': 1.6, 'strength': 64},
+    'Molde': {'home_goals': 1.6, 'away_goals': 1.0, 'home_conceded': 1.3, 'away_conceded': 1.6, 'strength': 66},
+    'Bodo/Glimt': {'home_goals': 1.7, 'away_goals': 1.1, 'home_conceded': 1.2, 'away_conceded': 1.5, 'strength': 67},
+    'Djurgarden': {'home_goals': 1.5, 'away_goals': 0.9, 'home_conceded': 1.3, 'away_conceded': 1.6, 'strength': 65},
+    'Hammarby': {'home_goals': 1.4, 'away_goals': 0.8, 'home_conceded': 1.4, 'away_conceded': 1.7, 'strength': 63},
+    'Elfsborg': {'home_goals': 1.3, 'away_goals': 0.7, 'home_conceded': 1.4, 'away_conceded': 1.7, 'strength': 62},
+    'Heidenheim': {'home_goals': 1.2, 'away_goals': 0.6, 'home_conceded': 1.5, 'away_conceded': 1.8, 'strength': 60},
+    'St Gallen': {'home_goals': 1.3, 'away_goals': 0.7, 'home_conceded': 1.4, 'away_conceded': 1.7, 'strength': 61},
+    'Lugano': {'home_goals': 1.2, 'away_goals': 0.6, 'home_conceded': 1.5, 'away_conceded': 1.8, 'strength': 59}
 }
 
 # הוספת נתונים בסיסיים לקבוצות אחרות
@@ -137,11 +200,11 @@ def get_team_stats(team, league_type):
     
     # נתונים בסיסיים לפי רמת הליגה
     if league_type == 'Champions League':
-        return {'home_goals': 1.8, 'away_goals': 1.2, 'home_conceded': 1.4, 'away_conceded': 1.7, 'strength': 75}
+        return {'home_goals': 1.9, 'away_goals': 1.3, 'home_conceded': 1.3, 'away_conceded': 1.6, 'strength': 76}
     elif league_type == 'Europa League':
-        return {'home_goals': 1.6, 'away_goals': 1.0, 'home_conceded': 1.5, 'away_conceded': 1.8, 'strength': 70}
+        return {'home_goals': 1.7, 'away_goals': 1.1, 'home_conceded': 1.4, 'away_conceded': 1.7, 'strength': 71}
     else:  # Conference League
-        return {'home_goals': 1.4, 'away_goals': 0.9, 'home_conceded': 1.6, 'away_conceded': 1.9, 'strength': 65}
+        return {'home_goals': 1.5, 'away_goals': 0.9, 'home_conceded': 1.5, 'away_conceded': 1.8, 'strength': 66}
 
 # ----------------------------
 # טעינת נתונים אוטומטית מ-GitHub
@@ -162,8 +225,7 @@ def load_league_data():
         "La Liga": "https://raw.githubusercontent.com/Sh1503/football-match-predictor/main/laliga.csv",
         "Serie A": "https://raw.githubusercontent.com/Sh1503/football-match-predictor/main/seriea.csv",
         "Bundesliga": "https://raw.githubusercontent.com/Sh1503/football-match-predictor/main/bundesliga.csv",
-        "Ligue 1": "https://raw.githubusercontent.com/Sh1503/football-match-predictor/main/ligue1.csv",
-        "Israeli Premier League": "https://raw.githubusercontent.com/Sh1503/football-match-predictor/main/israeli_league.csv"
+        "Ligue 1": "https://raw.githubusercontent.com/Sh1503/football-match-predictor/main/ligue1.csv"
     }
     
     league_data = {}
@@ -209,6 +271,11 @@ def predict_match_european(home_team, away_team, league_type):
     
     # חישוב שערים צפויים עם התחשבות בחוזק היחסי
     strength_factor = home_stats['strength'] / away_stats['strength']
+    
+    # התאמת יתרון הבית לליגות אירופיות (יותר מאוזן)
+    home_advantage = 0.25 if league_type == 'Champions League' else 0.3
+    away_disadvantage = 0.15 if league_type == 'Champions League' else 0.2
+    
     
     # התאמת יתרון הבית לליגות אירופיות (יותר מאוזן)
     home_goals_expected = home_stats['home_goals'] * (1 + (strength_factor - 1) * 0.3)
